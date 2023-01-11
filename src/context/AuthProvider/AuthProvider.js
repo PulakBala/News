@@ -1,12 +1,29 @@
-import React, { createContext } from 'react';
-
+import React, { createContext, useEffect, useState } from 'react';
+import {getAuth, onAuthStateChanged, signInWithPopup} from 'firebase/auth'
+import app from '../../firebase/firebase.config';
 export const AuthContext = createContext();
 
+const auth = getAuth(app)
+
 const AuthProvider = ({children}) => {
+    const [user, setUser] = useState(null);
 
-    const user = {displayName : 'Batas Ali'}
+    const providerLogin = (provider) =>{
+        return signInWithPopup(auth, provider)
+    }
 
-    const authInfo = {user};
+    useEffect(()=>{
+       const unsubscribe = onAuthStateChanged(auth, (curretnUser)=>{
+            console.log('inside state change', curretnUser);
+            setUser(curretnUser)
+        })
+        return () =>{
+            unsubscribe();
+        }
+    },[])
+
+
+    const authInfo = {user, providerLogin};
 
     return (
         <AuthContext.Provider value={authInfo}>
