@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthProvider/AuthProvider';
 
 const SignUp = () => {
+    const [error, setError] = useState('');
 
     const {createUser} = useContext(AuthContext)
 
@@ -20,15 +21,17 @@ const SignUp = () => {
         const password = form.password.value;
 
         console.log(name, photoURL, email, password);
-
+        
         createUser(email, password)
         .then(result => {
             const user = result;
             console.log(user)
+            setError('')
             form.reset();
             navigate('/login')
+            
         })
-        .catch(e => console.error(e));
+        .catch(e => setError(e.message));
 
     }
 
@@ -62,7 +65,7 @@ const SignUp = () => {
                 Login
             </Button>
             <Form.Text className="text-danger">
-                We'll never share your email with anyone else.
+                 {error}
             </Form.Text>
         </Form>
     );
