@@ -8,7 +8,7 @@ import { AuthContext } from '../../../context/AuthProvider/AuthProvider';
 const Login = () => {
     const [error, setError] = useState('');
 
-    const {signIn} = useContext(AuthContext);
+    const {signIn,setLoading} = useContext(AuthContext);
 
     const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ const Login = () => {
             const user = result.user;
             console.log(user);
             form.reset();
-            
+            setLoading(false);
             setError('');
             if(user.emailVerified) {
                 navigate(from, {replace: true})
